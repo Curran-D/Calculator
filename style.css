@@ -23,10 +23,13 @@
     background: rgb(255, 255, 82);
 }
 #operate {
-    width: 90px
+    width: 90px;
+    background: greenyellow;
 }
 
-
+#clear {
+    background: lightcoral;
+}
 
 p {
     
