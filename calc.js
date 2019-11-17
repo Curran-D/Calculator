@@ -11,60 +11,97 @@ function multiply (x, y) {
 }
 
 function divide (x, y) {
-    return x / y;
+    if (y == 0){
+        return "Divide by zero error"
+    } else {
+        return x / y;
+    }
 }
 
-function operate (operator, x, y){
-    if (operator == "add"){
-        return add(x,y);
-    }
-    if (operator == "subtract"){
-        return subtract(x,y);
-    }
-    if (operator == "divide"){
-        return divide(x,y);
-    }
-    if (operator == "multiply"){
-        return multiply(x,y);
+
+function operate (calc){
+    if (!Number(calc[0])){
+        return "Error - start with a number";
+    } else {
+        while (calc.length > 1){
+            for (let i = 0; i <calc.length; i++){
+                if (calc[i] == "/"){
+
+                    calc.splice(i-1 ,3 ,divide(calc[i-1],calc[i+1]));
+                }
+            }
+            for (let i = 0; i <calc.length; i++){
+                if (calc[i] == "*"){
+
+                    calc.splice(i-1 ,3 ,multiply(calc[i-1],calc[i+1]));
+                }
+            }
+            for (let i = 0; i <calc.length; i++){
+                if (calc[i] == "+"){
+
+                    calc.splice(i-1 ,3 ,add(calc[i-1],calc[i+1]));
+                }
+            }
+            for (let i = 0; i <calc.length; i++){
+                if (calc[i] == "-"){
+
+                    calc.splice(i-1 ,3 ,subtract(calc[i-1],calc[i+1]));
+                }
+            }    
+        }
+        return calc[0];
     }
 }
+
 
 function clear (){
     inputNumber = "";
-    operator = "";
     para.textContent = "";
     inputs = [];
+}
+
+function display (x){
+    if (answerDisplayed){
+        para.textContent = "";
+        answerDisplayed = false;
+    }
+
+    para.textContent += x;
+
 }
 
 let para = document.querySelector("p");
 let numberButtons = document.querySelectorAll(".number");
 let operatorButtons = document.querySelectorAll(".operator");
 let inputNumber = "";
-let operator = "";
 let inputs = [];
+let equals = document.querySelector('#operate');
+let answerDisplayed = false;
 
 numberButtons.forEach(function(button){   
     button.addEventListener('click',function(){   
         inputNumber += button.id;
-        para.textContent = inputNumber;
+        display(button.id);
     })
 })
 
 operatorButtons.forEach(function(button){
-    button.addEventListener('click',function(){
-        operator = button.id;
+    button.addEventListener('click',function(){       
         inputs.push(inputNumber);
+        inputs.push(button.id);
         inputNumber = "";
+        display(` ${button.id} `)        
     })
 })
 
-let equals = document.querySelector('#operate');
-
 equals.addEventListener('click',function(){
-    inputs.push(inputNumber);
-    inputNumber=operate(operator,inputs[inputs.length-2],inputs[inputs.length-1]);
-    para.textContent = inputNumber;
     
+        inputs.push(inputNumber);
+        let answer = operate(inputs);
+        clear();
+        display(answer);
+        answerDisplayed = true;
+
 })
 
 document.querySelector('#clear').addEventListener('click',function(){
